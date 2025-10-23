@@ -1,12 +1,12 @@
-**Examen de Programación III**
+# Examen de Programación III  
 
-Universidad Americana (UAM)
-Carrera: Ingeniería en Sistemas
-Profesor: Andrey Mauricio Padias Calvo
+**Universidad Americana (UAM)**  
+**Carrera:** Ingeniería en Sistemas  
+**Profesor:** Andrey Mauricio Padias Calvo  
 
-Estudiantes:
-Eduardo Duarte Vega
-Edisson Salgado Mendoza
-Abigail Gaitán Martinez
+**Estudiantes:**  
+- Eduardo Duarte Vega  
+- Edisson Salgado Mendoza  
+- Abigail Gaitán Martínez  
 
-Fecha entrega: 26 de octubre 2025
+**Fecha de entrega: 26 de octubre de 2025**
