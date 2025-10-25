@@ -23,7 +23,7 @@ namespace Examen1Progra3
         }
 
         // Sobrescribimos el método abstracto
-        public override void VisualizarTodoRegistroCitas()
+        protected override void VisualizarTodoRegistroCitas()
         {
             if (listaServicios.Count == 0)
             {

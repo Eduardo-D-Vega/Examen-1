@@ -8,7 +8,7 @@ namespace Examen1Progra3
 {
     public abstract class ServicioCitas 
     {
-        public string Cliente { get; set; }
+        protected string Cliente { get; set; }
         public TipoServicio TipoServicio { get; set; }
 
         public ServicioCitas(string cliente, string tipoServicio)
@@ -17,7 +17,7 @@ namespace Examen1Progra3
             TipoServicio = Enum.Parse<TipoServicio>(tipoServicio);
         }
 
-        public abstract void VisualizarTodoRegistroCitas(); //método para sobrescribir
+        protected abstract void VisualizarTodoRegistroCitas(); //método para sobrescribir
 
     }
 }

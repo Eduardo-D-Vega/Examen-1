@@ -9,7 +9,13 @@ namespace Examen1Progra3
     public interface IContactoCliente
     {
         //atributos solo para la Gestión de Citas y Control de clientes
-        protected int Telefono { get; set; }
-        protected string Correo { get; set; }
+        public int Telefono { get; set; }
+        public string Correo { get; set; }
+
+        public bool ValidarEspaciosVacios(string valor);
+        public bool ValidarTelefono(int numerotelefono);
+        public bool ValidarCorreo(string correo);
+
     }
+    
 }
