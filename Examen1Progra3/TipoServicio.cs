@@ -10,10 +10,10 @@ namespace Examen1Progra3
     {
         //tipos de servicios disponibles
 
-        CorteCaballero,
-        AfeitadoClasico,
-        CorteYAfeitado,
-        TratamientoCapilar, 
-        ArregloYPerfilado
+        Corte_Caballero,
+        Afeitado_Clasico,
+        Corte_Y_Afeitado,
+        Tratamiento_Capilar, 
+        Arreglo_Y_Perfilado
     }
 }
