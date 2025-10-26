@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -10,18 +11,27 @@ namespace Examen1Progra3
 {
     public class ControlCliente : ServicioCitas, IContactoCliente
     {
-
         public int Telefono { get; set; }
         public string Correo { get; set; }
 
         private NodoListaEnlazada inicio;
 
-        public ControlCliente(string cliente, string tipoServicio) : base(cliente, tipoServicio)
+        //Tomado de: UpGrad HashSet in Java
+        private HashSet<string> clientesRegistrados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+        public ControlCliente() : base("", "")
         {
         }
 
         private void AgregarClienteALista(string cliente, int telefono, string correo, DateTime fechaCita)
         {
+            //validación de HashSet para evitar duplicados (tomado de: UpGrad)
+            if (clientesRegistrados.Add(cliente))
+            {
+                Console.WriteLine("El cliente ya se encuentra registrado");
+                return;
+            }
+
             inicio = new NodoListaEnlazada(cliente, telefono, correo,fechaCita, inicio);
         }
 
@@ -61,7 +71,7 @@ namespace Examen1Progra3
                     return;
                 }
 
-                Console.WriteLine("Ingrese la fecha de la cita (Año-mes-día):  ");
+                Console.WriteLine("Ingrese la fecha de la cita (día-mes-año):  ");
                 string fechaInput = Console.ReadLine().Trim();
                 if (!DateTime.TryParse(fechaInput, out DateTime fechaCita))
                 {
@@ -70,7 +80,7 @@ namespace Examen1Progra3
                 }
 
                 AgregarClienteALista(cliente, telefono, correo, fechaCita);
-                Console.WriteLine("---Cliente registrado exitosamente ---\n");
+                Console.WriteLine("---El cliente fue registrado exitosamente ---\n");
 
             }
             catch (Exception ex)
@@ -107,6 +117,7 @@ namespace Examen1Progra3
             return true;
         }
 
+        //tomado de: stackoverflow (Expresión regular de un email en C#)
         bool IContactoCliente.ValidarCorreo(string correo)
         {
             if (!((IContactoCliente)this).ValidarEspaciosVacios(correo))
@@ -114,24 +125,9 @@ namespace Examen1Progra3
                 return false;
             }
 
-            bool arroba = false;
-            bool punto = false;
-            for (int i = 0; i < correo.Length; i++)
-            {
-                if (correo[i] == '@')
-                {
-                    arroba = true;
-                }
-                if (correo[i] == '.')
-                {
-                    punto = true;
-                }
-            }
-            return arroba && punto;
-
-            //anadir referencia
+            return Regex.IsMatch(correo, "^(([\\w-]+\\.)+[\\w-]+|([a-zA-Z]{1}|[\\w-]{2,}))@(([a-zA-Z]+[\\w-]+\\.){1,2}[a-zA-Z]{2,4})$");
         }
-        
+
         protected override void VisualizarTodoRegistroCitas()
         {
             try
@@ -147,7 +143,7 @@ namespace Examen1Progra3
                 NodoListaEnlazada recorrer = inicio;
                 while (recorrer != null)
                 {
-                    Console.WriteLine($"[ Nombre: {recorrer.cliente} | Teléfono: {recorrer.telefono} | Correo: {recorrer.correo} | Fecha: {recorrer.FechaCita.ToString("Año - mes - día")} ] --->");
+                    Console.WriteLine($"[ Nombre: {recorrer.cliente} | Teléfono: {recorrer.telefono} | Correo: {recorrer.correo} | Fecha: {recorrer.FechaCita.ToString("dd/MM/yyyy")} ] --->");
                     recorrer = recorrer.Siguiente;
                 }
                 Console.WriteLine("----------------------\n");
@@ -156,6 +152,96 @@ namespace Examen1Progra3
             {
                 Console.WriteLine("Ocurrio un error al visualizar en registro de las citas. Error: " + ex.Message);
             }
+        }
+
+        public void BuscarCliente()
+        {
+            try 
+            {
+                if (inicio == null)
+                {
+                    Console.WriteLine("No hay clientes registrados.");
+                    return;
+                }
+
+                Console.Write("----Busquedad de cliente por nombre----\n");
+                Console.Write("Ingrese el nombre del cliente a buscar: ");
+                string nombreCliente = Console.ReadLine().Trim();
+
+                NodoListaEnlazada actual = inicio;
+                bool encontrado = false;
+
+                while (actual != null)
+                {
+                    if (string.Equals(actual.cliente, nombreCliente, StringComparison.OrdinalIgnoreCase))
+                    {
+                        Console.WriteLine("----El cliente fue encontrado encontrado----\n");
+                        Console.WriteLine("Información del cliente:");
+                        Console.WriteLine("--------------------------------");
+                        Console.WriteLine($" [Nombre del cliente: {actual.cliente}]");
+                        Console.WriteLine($"[Telefono: {actual.telefono}]");
+                        Console.WriteLine($"[Correo: {actual.correo}]");
+                        Console.WriteLine($"[Fecha de Cita: {actual.FechaCita.ToString("dd/MM/yyyy")}]");
+                        Console.WriteLine("--------------------------------");
+                        encontrado = true;
+                        break;
+                    }
+                    actual = actual.Siguiente;
+                }
+
+                if (!encontrado)
+                {
+                    Console.WriteLine("El cliente no fue encontrado");
+                }
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Ha ocurrido un error al buscar el cliente. Error: " + ex.Message);
+            }
+        }
+
+        public void SubmenuControlClientes()
+        {
+            bool submenu = true;
+            do
+            {
+                Console.WriteLine("\n---- Menú de Control de Clientes ----");
+                Console.WriteLine("1. para agregar cliente");
+                Console.WriteLine("2. para buscar cliente");
+                Console.WriteLine("3. para ver el historial de citas");
+                Console.WriteLine("4. para regresar al menú principal");
+                Console.Write("Elija una opción: ");
+
+                try
+                {
+                    int opcion = int.Parse(Console.ReadLine());
+
+                    switch (opcion)
+                    {
+                        case 1:
+                            RegistrarCliente();
+                            break;
+                        case 2:
+                            BuscarCliente();
+                            break;
+                        case 3:
+                            VisualizarTodoRegistroCitas();
+                            break;
+                        case 4:
+                            submenu = false;
+                            break;
+                        default:
+                            Console.WriteLine("Opción inválida, debe ingresar un numero del 1 al 4");
+                            break;
+                    }
+                }
+                catch (FormatException)
+                {
+                    Console.WriteLine("Entrada inválida, por favor ingrese un numero del 1 al 4");
+                }
+            }
+            while (submenu);
         }
     }
 }

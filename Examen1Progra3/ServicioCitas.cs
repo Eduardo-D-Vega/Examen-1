@@ -9,15 +9,15 @@ namespace Examen1Progra3
     public abstract class ServicioCitas 
     {
         protected string Cliente { get; set; }
-        public TipoServicio TipoServicio { get; set; }
+        protected TipoServicio TipoServicio { get; set; }
 
-        public ServicioCitas(string cliente, string tipoServicio)
+        protected ServicioCitas(string cliente, string tipoServicio)
         {
             Cliente = cliente;
             TipoServicio = Enum.Parse<TipoServicio>(tipoServicio);
         }
 
-        protected abstract void VisualizarTodoRegistroCitas(); //método para sobrescribir
+        protected abstract void VisualizarTodoRegistroCitas(); 
 
     }
 }
