@@ -170,7 +170,7 @@ namespace Examen1Progra3
                     {
                         if (!existente)
                         {
-                            Console.WriteLine($"\>> El cliente {nombreCliente} fue encontrado\n <<");
+                            Console.WriteLine($"\>> El cliente {nombreCliente} fue encontrado\n<<");
                             Console.WriteLine("Información del cliente: ");
                             Console.WriteLine("--------------------------------");
                             existente = true;
