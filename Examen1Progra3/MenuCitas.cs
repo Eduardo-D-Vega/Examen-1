@@ -85,14 +85,14 @@ namespace Examen1Progra3
 
                     if (string.IsNullOrWhiteSpace(nombre))
                     {
-                        Console.WriteLine("❌ El nombre no puede estar vacío.\n");
+                        Console.WriteLine("El nombre no puede estar vacío.\n");
                         continue;
                     }
 
                     // Verifica que solo haya letras o espacios
                     if (!nombre.All(c => char.IsLetter(c) || char.IsWhiteSpace(c)))
                     {
-                        Console.WriteLine("❌ El nombre solo puede contener letras y espacios.\n");
+                        Console.WriteLine("El nombre solo puede contener letras y espacios.\n");
                         continue;
                     }
                     break; // válido
@@ -106,19 +106,19 @@ namespace Examen1Progra3
 
                     if (string.IsNullOrWhiteSpace(telefonoStr))
                     {
-                        Console.WriteLine("❌ El teléfono no puede estar vacío.\n");
+                        Console.WriteLine("El teléfono no puede estar vacío.\n");
                         continue;
                     }
 
                     if (!telefonoStr.All(char.IsDigit))
                     {
-                        Console.WriteLine("❌ El teléfono solo debe contener números.\n");
+                        Console.WriteLine("El teléfono solo debe contener números.\n");
                         continue;
                     }
 
                     if (telefonoStr.Length != 8)
-                    {
-                        Console.WriteLine("❌ El teléfono debe tener exactamente 8 dígitos.\n");
+                    { 
+                        Console.WriteLine("El teléfono debe tener exactamente 8 dígitos.\n");
                         continue;
                     }
 
@@ -134,16 +134,15 @@ namespace Examen1Progra3
 
                     if (string.IsNullOrWhiteSpace(correo))
                     {
-                        Console.WriteLine("❌ El correo no puede estar vacío.\n");
+                        Console.WriteLine("El correo no puede estar vacío.\n");
                         continue;
                     }
 
                     if (!correo.Contains('@') || !correo.Contains('.'))
                     {
-                        Console.WriteLine("❌ Correo inválido. Debe contener '@' y '.'\n");
+                        Console.WriteLine("Correo inválido. Debe contener '@' y '.'\n");
                         continue;
                     }
-
                     break;
                 }
 
@@ -162,7 +161,7 @@ namespace Examen1Progra3
                     if (!int.TryParse(opcionTipo, out int tipoSeleccion) ||
                         !Enum.IsDefined(typeof(TipoServicio), tipoSeleccion))
                     {
-                        Console.WriteLine("❌ Tipo de servicio no válido. Intente nuevamente.\n");
+                        Console.WriteLine("Tipo de servicio no válido. Intente nuevamente.\n");
                         continue;
                     }
 
@@ -171,6 +170,7 @@ namespace Examen1Progra3
                 }
 
                 DateTime fecha;
+                TimeSpan hora;
                 while (true)
                 {
                     Console.Write("Ingrese la fecha de la cita (YYYY-MM-DD): ");
@@ -178,61 +178,55 @@ namespace Examen1Progra3
 
                     if (!DateTime.TryParse(fechaStr, out fecha))
                     {
-                        Console.WriteLine("❌ Fecha inválida. Use el formato YYYY-MM-DD.\n");
+                        Console.WriteLine("Fecha inválida. Debe usar el el formato (YYYY-MM-DD)\n");
                         continue;
                     }
 
-                    break;
-                }
-
-                TimeSpan hora;
-                while (true)
-                {
                     Console.Write("Ingrese la hora de la cita (HH:mm): ");
                     string horaStr = Console.ReadLine()?.Trim();
 
                     if (!TimeSpan.TryParse(horaStr, out hora))
                     {
-                        Console.WriteLine("❌ Hora inválida. Use el formato HH:mm.\n");
+                        Console.WriteLine("Hora inválida. Debe usar el formato (HH:mm)\n");
                         continue;
                     }
 
-                    break;
+                    DateTime fechaHora = fecha.Date + hora;
+
+                    if (fechaHora < DateTime.Now)
+                    {
+                        Console.WriteLine("Las fechas pasadas no son permitidas. Intente de nuevo\n");
+                        continue;
+                    }
+
+                    if (fechaHora > DateTime.Now.AddDays(7))
+                    {
+                        Console.WriteLine("Solo se agendan citas con maximo una semana de antelación\n");
+                        continue;
+                    }
+                    break; //se sale del bucle si todo es válido
                 }
 
-                DateTime fechaHora = fecha.Date + hora;
+                DateTime fechaHoraFinal = fecha.Date + hora;
 
-                // Validaciones de tiempo
-                if (fechaHora < DateTime.Now)
-                {
-                    Console.WriteLine("❌ No se pueden agendar citas en fechas pasadas.\n");
-                    return;
-                }
-
-                if (fechaHora > DateTime.Now.AddDays(7))
-                {
-                    Console.WriteLine("❌ Solo se puede agendar con una semana de anticipación como máximo.\n");
-                    return;
-                }
-
-                // Registro exitoso
-                Cita nuevaCita = new Cita(contadorId++, nombre, telefono, correo, tipoServicio, fechaHora);
+                //registro exitoso
+                Cita nuevaCita = new Cita(contadorId++, nombre, telefono, correo, tipoServicio, fechaHoraFinal);
                 citas.Add(nuevaCita);
 
-                // 🔗 Guardar también en historial (ControlCliente → lista enlazada)
+                //lo guarda también en el la lista enlazada
                 var agregarMetodo = typeof(ControlCliente).GetMethod("AgregarClienteALista",
                     System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
 
                 if (agregarMetodo != null)
                 {
-                    agregarMetodo.Invoke(controlCliente, new object[] { nombre, telefono, correo, fechaHora });
+                    agregarMetodo.Invoke(controlCliente, new object[] { nombre, telefono, correo, fechaHoraFinal });
                 }
 
-                Console.WriteLine("\n✅ Cita registrada correctamente y añadida al historial.\n");
+                Console.WriteLine("\nLa cita fue registrada y añadida al historial\n");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"⚠ Error al registrar la cita: {ex.Message}");
+                Console.WriteLine($"Error al registrar la cita: {ex.Message}");
             }
         }
 
@@ -241,17 +235,17 @@ namespace Examen1Progra3
         {
             try
             {
-                // 🔹 Si no hay citas registradas, mostrar aviso y salir
+                //Si no hay citas registradas, mostrar aviso y salir
                 if (citas == null || citas.Count == 0)
                 {
                     Console.WriteLine("\n No hay citas registradas actualmente.");
                     return;
                 }
 
-                Console.WriteLine("\n¿Desea filtrar por fecha específica? (s/n): ");
+                Console.WriteLine("\n¿Desea filtrar por fecha especifica? (s/n): ");
                 string respuesta = Console.ReadLine()?.Trim().ToLower();
 
-                // 🔹 Si la respuesta no es 's', se muestran todas
+                //Si la respuesta no es 's' se muestran todas
                 if (respuesta != "s")
                 {
                     MostrarListaDeCitas(citas);
@@ -261,7 +255,7 @@ namespace Examen1Progra3
                 Console.Write("Ingrese la fecha (YYYY-MM-DD): ");
                 string fechaInput = Console.ReadLine()?.Trim();
 
-                // 🔹 Validación: entrada vacía
+                //validación: entrada vacía
                 if (string.IsNullOrWhiteSpace(fechaInput))
                 {
                     Console.WriteLine(" No ingresó una fecha. Mostrando todas las citas...\n");
@@ -269,14 +263,14 @@ namespace Examen1Progra3
                     return;
                 }
 
-                // 🔹 Validación: formato de fecha
+                //validación: formato de fecha
                 if (!DateTime.TryParse(fechaInput, out DateTime fechaFiltro))
                 {
                     Console.WriteLine("Formato de fecha inválido. Use el formato YYYY-MM-DD.\n");
                     return;
                 }
 
-                // 🔹 Filtrado por fecha
+                //filtrado por fecha
                 var citasFiltradas = citas.Where(c => c.FechaHora.Date == fechaFiltro.Date).ToList();
 
                 if (citasFiltradas.Count == 0)
@@ -337,11 +331,11 @@ namespace Examen1Progra3
             if (citaEncontrada != null)
             {
                 citas.Remove(citaEncontrada);
-                Console.WriteLine("✅ Cita cancelada exitosamente.");
+                Console.WriteLine("Cita cancelada exitosamente.");
             }
             else
             {
-                Console.WriteLine("❌ No se encontró ninguna cita con esa información.");
+                Console.WriteLine("No se encontró ninguna cita con esa información.");
             }
         }
     }

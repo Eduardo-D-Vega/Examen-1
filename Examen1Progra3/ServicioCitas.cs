@@ -25,7 +25,6 @@ namespace Examen1Progra3
             }
         }
 
-
         protected abstract void VisualizarTodoRegistroCitas(); 
 
     }

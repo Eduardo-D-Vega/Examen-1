@@ -170,7 +170,7 @@ namespace Examen1Progra3
                     {
                         if (!existente)
                         {
-                            Console.WriteLine($"\>> El cliente {nombreCliente} fue encontrado\n<<");
+                            Console.WriteLine($"\n>> El cliente '{nombreCliente}' fue encontrado\n<<");
                             Console.WriteLine("Información del cliente: ");
                             Console.WriteLine("--------------------------------");
                             existente = true;
@@ -200,10 +200,10 @@ namespace Examen1Progra3
             do
             {
                 Console.WriteLine("\n---- MENÚ: CONTROL DE CLIENTES ----");
-                Console.WriteLine("1. para agregar cliente");
-                Console.WriteLine("2. para buscar cliente");
-                Console.WriteLine("3. para ver el historial de citas");
-                Console.WriteLine("4. para regresar al menú principal");
+                Console.WriteLine("1. Añadir cliente");
+                Console.WriteLine("2. Buscar cliente");
+                Console.WriteLine("3. Historial de citas");
+                Console.WriteLine("4. regresar al menú principal");
                 Console.Write("Elija una opción: ");
 
                 try
