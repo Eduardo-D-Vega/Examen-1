@@ -11,7 +11,7 @@
 
 **Fecha de entrega: 26 de octubre de 2025**
 
-Para convertir un dato en formato monetario se usó como fuente la pagina: https://es.stackoverflow.com/questions/131206/c-mvc-como-usar-formato-moneda
+Para convertir un dato en formato monetario se usó como fuente la pagina: https://es.stackoverflow.com/questions/131206/c-mvc-como-usar-formato-moneda <br>
 Eliminar duplicados en listas enlazadas utilizando HashSet:<br>
 https://www.youtube.com/watch?v=uIFwYGKV6IE <br>
 https://www.upgrad.com/tutorials/software-engineering/java-tutorial/hashset-in-java/ <br>
