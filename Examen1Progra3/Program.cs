@@ -24,7 +24,7 @@ class Program
                     break;
                 case "2":
                     ControlCliente cliente = new ControlCliente("Sistema", nameof(TipoServicio.Corte_Caballero));
-                    cliente.RegistrarCliente();
+                    cliente.SubmenuControlClientes();
                     break;
                 case "3":
                     Servicios.MenuServicios();

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Cryptography;
@@ -16,22 +17,12 @@ namespace Examen1Progra3
 
         private NodoListaEnlazada inicio;
 
-        //Tomado de: UpGrad HashSet in Java
-        private HashSet<string> clientesRegistrados = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        public ControlCliente() : base("", "")
+        public ControlCliente(string cliente, string tipoServicio) : base(cliente, tipoServicio)
         {
         }
 
         private void AgregarClienteALista(string cliente, int telefono, string correo, DateTime fechaCita)
-        {
-            //validación de HashSet para evitar duplicados (tomado de: UpGrad)
-            if (clientesRegistrados.Add(cliente))
-            {
-                Console.WriteLine("El cliente ya se encuentra registrado");
-                return;
-            }
-
+        { 
             inicio = new NodoListaEnlazada(cliente, telefono, correo,fechaCita, inicio);
         }
 
@@ -71,16 +62,18 @@ namespace Examen1Progra3
                     return;
                 }
 
-                Console.WriteLine("Ingrese la fecha de la cita (día-mes-año):  ");
+                Console.WriteLine("Ingrese la fecha de la cita (dd/MM/yyyy): ");
                 string fechaInput = Console.ReadLine().Trim();
-                if (!DateTime.TryParse(fechaInput, out DateTime fechaCita))
-                {
+
+                //Tomado de: stackoverflow (DateTime.TryParseExact CultureInfo.InvariantCulture)
+                if (!DateTime.TryParseExact(fechaInput, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime fechaCita))
+                    {
                     Console.WriteLine("La fecha ingresada no es válida, intente de nuevo");
                     return;
                 }
 
                 AgregarClienteALista(cliente, telefono, correo, fechaCita);
-                Console.WriteLine("---El cliente fue registrado exitosamente ---\n");
+                Console.WriteLine("\n--- El cliente fue registrado exitosamente ---\n");
 
             }
             catch (Exception ex)
@@ -109,7 +102,7 @@ namespace Examen1Progra3
 
             for (int i = 0; i < numeroString.Length; i++)
             {
-                if (numeroString[i] < 0 || numeroString[i] > 8)
+                if (numeroString[i] < '0' || numeroString[i] > '9')
                 {
                     return false;
                 }
@@ -143,10 +136,10 @@ namespace Examen1Progra3
                 NodoListaEnlazada recorrer = inicio;
                 while (recorrer != null)
                 {
-                    Console.WriteLine($"[ Nombre: {recorrer.cliente} | Teléfono: {recorrer.telefono} | Correo: {recorrer.correo} | Fecha: {recorrer.FechaCita.ToString("dd/MM/yyyy")} ] --->");
+                    Console.WriteLine($"[Nombre: {recorrer.cliente} | Teléfono: {recorrer.telefono} | Correo: {recorrer.correo} | Fecha: {recorrer.FechaCita.ToString("dd/MM/yyyy")}]");
                     recorrer = recorrer.Siguiente;
                 }
-                Console.WriteLine("----------------------\n");
+                Console.WriteLine("--------------------------------\n");
             }
             catch (Exception ex)
             {
@@ -164,36 +157,36 @@ namespace Examen1Progra3
                     return;
                 }
 
-                Console.Write("----Busquedad de cliente por nombre----\n");
+                Console.Write("---- BUSQUEDA DE CLIENTES (POR NOMBRE) ----\n");
                 Console.Write("Ingrese el nombre del cliente a buscar: ");
                 string nombreCliente = Console.ReadLine().Trim();
 
                 NodoListaEnlazada actual = inicio;
-                bool encontrado = false;
+                bool existente = false;
 
                 while (actual != null)
                 {
                     if (string.Equals(actual.cliente, nombreCliente, StringComparison.OrdinalIgnoreCase))
                     {
-                        Console.WriteLine("----El cliente fue encontrado encontrado----\n");
-                        Console.WriteLine("Información del cliente:");
+                        if (!existente)
+                        {
+                            Console.WriteLine($"\>> El cliente {nombreCliente} fue encontrado\n <<");
+                            Console.WriteLine("Información del cliente: ");
+                            Console.WriteLine("--------------------------------");
+                            existente = true;
+                        }
+                        Console.WriteLine($"Nombre del cliente: {actual.cliente}");
+                        Console.WriteLine($"Telefono: {actual.telefono}");
+                        Console.WriteLine($"Correo: {actual.correo}");
+                        Console.WriteLine($"Fecha de Cita: {actual.FechaCita.ToString("dd/MM/yyyy")}]");
                         Console.WriteLine("--------------------------------");
-                        Console.WriteLine($" [Nombre del cliente: {actual.cliente}]");
-                        Console.WriteLine($"[Telefono: {actual.telefono}]");
-                        Console.WriteLine($"[Correo: {actual.correo}]");
-                        Console.WriteLine($"[Fecha de Cita: {actual.FechaCita.ToString("dd/MM/yyyy")}]");
-                        Console.WriteLine("--------------------------------");
-                        encontrado = true;
-                        break;
                     }
                     actual = actual.Siguiente;
                 }
-
-                if (!encontrado)
+                if (!existente)
                 {
                     Console.WriteLine("El cliente no fue encontrado");
                 }
-
             }
             catch (Exception ex)
             {
@@ -206,7 +199,7 @@ namespace Examen1Progra3
             bool submenu = true;
             do
             {
-                Console.WriteLine("\n---- Menú de Control de Clientes ----");
+                Console.WriteLine("\n---- MENÚ: CONTROL DE CLIENTES ----");
                 Console.WriteLine("1. para agregar cliente");
                 Console.WriteLine("2. para buscar cliente");
                 Console.WriteLine("3. para ver el historial de citas");
