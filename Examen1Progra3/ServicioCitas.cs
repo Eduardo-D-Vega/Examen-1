@@ -14,8 +14,17 @@ namespace Examen1Progra3
         protected ServicioCitas(string cliente, string tipoServicio)
         {
             Cliente = cliente;
-            TipoServicio = Enum.Parse<TipoServicio>(tipoServicio);
+
+            try
+            {
+                TipoServicio = Enum.Parse<TipoServicio>(tipoServicio);
+            }
+            catch
+            {
+                TipoServicio = TipoServicio.Corte_Caballero; // valor por defecto
+            }
         }
+
 
         protected abstract void VisualizarTodoRegistroCitas(); 
 
