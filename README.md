@@ -13,7 +13,7 @@
 
 
 **Referencias** <br>
-Para convertir un dato en formato monetario se usó como fuente la pagina: https://es.stackoverflow.com/questions/131206/c-mvc-como-usar-formato-moneda <br>
+ <br>
 Formato de fecha:<br>
 https://stackoverflow.com/questions/15658909/datetime-tryparseexact-cultureinfo-invariantculture <br>
 Método de validar el correo: https://es.stackoverflow.com/questions/109993/expresi%C3%B3n-regular-de-un-email-en-c
